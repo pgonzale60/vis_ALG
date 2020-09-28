@@ -5,7 +5,8 @@ This script takes as input the resulting `full_table.tsv`.
 
 
 ## Installation
-The script relies on several R libraries. These can be installed with conda. I recommend creating a new conda environment to avoid conflicts with other packages.
+
+I recommend to install the dependencie via conda and to do so in a new conda environment to avoid conflicts with other packages.
 
 ```
 # Define name for new conda environment
@@ -16,28 +17,30 @@ conda create -n $ENV_NAME -c r -c conda-forge icu=58 r-dplyr=0.8 r-readr=1.3.1 r
 conda activate $ENV_NAME
 ```
 
-
-
-## Usage
-There are two examples which you can use to test.
-
+Then get the script and the Nigon defintion found in this repository.
 ```
 git clone https://github.com/pgonzale60/vis_ALG.git
 cd vis_ALG/
+```
 
+## Usage
+
+You will need to specify the result of BUSCO and the location of the Nigon element dictionary.
+
+```
 Rscript bin/vis_ALGs.R -b full_table.tsv -n data/gene2Nigon_busco20200927.tsv.gz -s Genus_species -o output.png
 ```
 
 ## Examples
 
-*Caenorhabditis elegans* and *Oscheius tipulae* full_table.tsv resulting from BUSCO 4 using nematoda_odb10 are included as examples.
+There are two examples which you can use to test: *Caenorhabditis elegans* and *Oscheius tipulae* full_table.tsv resulting from BUSCO v4 using nematoda_odb10.
 
-To generate a PNG image of Nigon units in *O. tipulae* chromosomes you can execute
+To generate a PNG image of the Nigon elements in *O. tipulae* chromosomes you can execute
 ```
 Rscript bin/vis_ALGs.R -b examples/oscheius_tipulae.local.v3_1rx.full_table.tsv -n data/gene2Nigon_busco20200927.tsv.gz -s Oscheius_tipulae -o otipu.png
 ```
 
-To generate a JPEG image of Nigon units in *C. elegans* chromosomes you can execute
+To generate a JPEG image of the Nigon elements in *C. elegans* chromosomes you can execute
 ```
 Rscript bin/vis_ALGs.R -b examples/oscheius_tipulae.local.v3_1rx.full_table.tsv -n data/gene2Nigon_busco20200927.tsv.gz -s Caenorhabditis_elegans -o cele.jpeg
 ```
