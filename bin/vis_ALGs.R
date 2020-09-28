@@ -2,8 +2,9 @@
 
 library(optparse)
 library(readr)
-library(dplyr)
-library(scales)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(scales))
+library(ggplot2)
 library(ggpubr)
 library(gtools)
 
@@ -11,15 +12,15 @@ library(gtools)
 
 option_list = list(
   make_option(c("-b", "--busco"), type="character", default=NULL, 
-              help="busco full_table.tsv file", metavar="FILE.tsv"),
+              help="busco full_table.tsv file", metavar="file.tsv"),
   make_option(c("-n", "--nigon"), type="character", default="gene2Nigon_busco20200927.tsv.gz", 
-              help="busco id assignment to Nigons [default=%default]", metavar="FILE.tsv.gz"),
+              help="busco id assignment to Nigons [default=%default]", metavar="file.tsv"),
   make_option(c("-w", "--windowSize"), type="integer", default=5e5, 
               help="window size to bin the busco genes [default=%default]. Sequences shorter than twice this integer will not be shown in the plot", metavar="integer"),
   make_option(c("-m", "--minimumGenesPerSequence"), type="integer", default=15, 
               help="sequences (contigs/scaffolds) with less than this number of busco genes will not be shown in the plot [default=%default]", metavar="integer"),
   make_option(c("-o", "--outPlot"), type="character", default="Nigons.jpeg", 
-              help="output image [default=%default]. Should include one of the following extensions: eps, ps, tex, pdf, jpeg, tiff, png, bmp or svg", metavar="FILE"),
+              help="output image [default=%default]. Should include one of the following extensions: eps, ps, tex, pdf, jpeg, tiff, png, bmp or svg", metavar="file"),
   make_option(c("--height"), type="integer", default=6, 
               help="height of plot. Increase this value according to the number of ploted sequences [default=%default]", metavar="integer"),
   make_option(c("--width"), type="integer", default=5, 
@@ -32,12 +33,18 @@ opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
 
 # Load data
-nigonDict <- read_tsv(opt$nigon)
-busco <- read_tsv(opt$busco,
+nigonDict <- read_tsv(opt$nigon,
+                      col_types = c(col_character(), col_character()))
+busco <- suppressWarnings(read_tsv(opt$busco,
                   col_names = c("Busco_id", "Status", "Sequence",
                                 "start", "end", "Score", "Length",
                                 "OrthoDB_url", "Description"),
-                  comment = "#")
+                  col_types = c(col_character(), col_character(),
+                                col_character(), col_double(),
+                                col_double(), col_double(),
+                                col_double(), col_character(),
+                                col_character()),
+                  comment = "#"))
 
 windwSize <- opt$windowSize
 minimumGenesPerSequence <- opt$minimumGenesPerSequence
