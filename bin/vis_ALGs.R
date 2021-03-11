@@ -36,13 +36,9 @@ nigonDict <- read_tsv(opt$nigon,
                       col_types = c(col_character(), col_character()))
 busco <- suppressWarnings(read_tsv(opt$busco,
                   col_names = c("Busco_id", "Status", "Sequence",
-                                "start", "end", "Score", "Length",
+                                "start", "end", "strand", "Score", "Length",
                                 "OrthoDB_url", "Description"),
-                  col_types = c(col_character(), col_character(),
-                                col_character(), col_double(),
-                                col_double(), col_double(),
-                                col_double(), col_character(),
-                                col_character()),
+                  col_types = c("ccciicdicc"),
                   comment = "#"))
 
 windwSize <- opt$windowSize
@@ -63,7 +59,8 @@ cols <- c("A" = "#af0e2b", "B" = "#e4501e",
 fbusco <- filter(busco, !Status %in% c("Missing")) %>%
   left_join(nigonDict, by = c("Busco_id" = "Orthogroup")) %>%
   mutate(nigon = ifelse(is.na(nigon), "-", nigon),
-         stPos = start)
+         stPos = start) %>%
+  filter(nigon != "-")
 
 consUsco <- group_by(fbusco, Sequence) %>%
   mutate(nGenes = n(),
@@ -96,9 +93,9 @@ plNigon <- group_by(consUsco, Sequence) %>%
                              title = "Nigon")) +
   theme(axis.title.y=element_blank(),
         axis.title.x=element_blank(),
-        # axis.text.x = element_blank(),
-        # legend.position="top",
         panel.border = element_blank(),
+        strip.text.y.left = element_text(angle = 0),
+        text = element_text(size=9),
         plot.title = ggtext::element_markdown()
         )
 
