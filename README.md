@@ -49,3 +49,34 @@ Rscript bin/vis_ALGs.R -b examples/oscheius_tipulae.local.v3_1rx.full_table.tsv 
 
 Example PNG *Oshceius tipulae* Nigon painting:
 ![Example PNG *Oshceius tipulae* Nigon painting ](otipu.png)
+
+## Options
+
+```
+	-b FILE.TSV, --busco=FILE.TSV
+		busco full_table.tsv file
+
+	-n FILE.TSV, --nigon=FILE.TSV
+		busco id assignment to Nigons [default=gene2Nigon_busco20200927.tsv.gz]
+
+	-w INTEGER, --windowSize=INTEGER
+		window size to bin the busco genes [default=500000]. Sequences shorter than twice this integer will not be shown in the plot
+
+	-m INTEGER, --minimumGenesPerSequence=INTEGER
+		sequences (contigs/scaffolds) with less than this number of busco genes will not be shown in the plot [default=15]
+
+	-o FILE, --outPlot=FILE
+		output image [default=Nigons.jpeg]. Should include one of the following extensions: eps, ps, tex, pdf, jpeg, tiff, png, bmp or svg
+
+	--height=INTEGER
+		height of plot. Increase this value according to the number of ploted sequences [default=6]
+
+	--width=INTEGER
+		width of plot [default=5]
+
+	-s GENUS_SPECIES, --species=GENUS_SPECIES
+		Title to be italicized in the plot [default=]
+
+	-h, --help
+		Show this help message and exit
+```
