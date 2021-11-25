@@ -52,7 +52,7 @@ if(grepl(".", opt$species)) {
 cols <- c("A" = "#af0e2b", "B" = "#e4501e",
           "C" = "#4caae5", "D" = "#f3ac2c",
           "E" = "#57b741", "N" = "#8880be",
-          "X" = "#81008b", "-" = "#aaaaaa")
+          "X" = "#81008b")
 
 # Filter data
 
