@@ -2,10 +2,23 @@
 
 You need to run BUSCO on your genome assembly using the nematoda_odb10 dataset.
 This script takes as input the resulting `full_table.tsv`.
+You can now paint your genome by Nigons online. Simply upload your BUSCO full_table TSV file to [https://pgonzale60.shinyapps.io/vis_alg/](https://pgonzale60.shinyapps.io/vis_alg/). 
+
+## Online painting
+
+There are two variables that are important in the interpretation of the plot: the **bin size** and the **minimum number of loci**. These determine which, if any, scaffolds will be excluded from the plot. Small scaffolds are intentionally excluded as Nigons can only be meaningfully interpreted in multimegabase long sequences. 
+
+The **bin size** determines at which span the BUSCO loci will be grouped. However, it also filters out scaffolds whose loci at the most distant part is less than twice the bin size. For example, if using a bin size of 500,000, and the assembly contains a scaffold with many BUSCO loci, but all of them found in only the first 900,000 basepairs of the sequence, this scaffold would be excluded from the plot.
+
+The other filtering parameter is the **number of loci**. This one simply excludes scaffolds that have less than x number of BUSCO loci.
+
+The **height** and **width** parameters do not affect the online plot. These only affect the PDF that we recommend you to download. Adjust the width and height of the PDF plot to fit the size of your scaffolds.
+
+We do not have access to the files you upload. 
 
 ## Installation
 
-I recommend to install the dependencie via conda and to do so in a new conda environment to avoid conflicts with other packages.
+If you prefer to create the plot locally, I recommend to install the dependencies via conda and to do so in a new conda environment to avoid conflicts with other packages.
 
 ``` shell
 # Define name for new conda environment
