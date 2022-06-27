@@ -93,3 +93,8 @@ Example PNG *Oshceius tipulae* Nigon painting:
 	-h, --help
 		Show this help message and exit
 ```
+
+## Citation
+
+The nematoda ODB 10 loci assessed by BUSCO were classified into Nigons as described in 
+Gonzalez de la Rosa, Pablo Manuel, et al. "A telomere-to-telomere assembly of *Oscheius tipulae* and the evolution of rhabditid nematode chromosomes." *G3* 11.1 (2021): jkaa020.
