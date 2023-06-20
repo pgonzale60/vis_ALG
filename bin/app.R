@@ -4,6 +4,7 @@ suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(scales))
 library(ggplot2)
 library(gtools)
+require(ggtext)
 
 ### Functions ####
 # Function for loading buscos
@@ -28,21 +29,20 @@ nigonDict <- read_tsv("gene2Nigon_busco20200927.tsv.gz",
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
+    
     # Application title
     titlePanel("Paint your genome by Nigon units"),
-
+    
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
             fileInput("file1", "Choose BUSCO full table TSV file",
-                      accept = c("tsv")
-            ),
+                      accept = c("tsv")),
             numericInput("windowSize", 
                          "bin size for BUSCO loci", 
                          value = 500000),
             numericInput("minLoci", 
-                         "remove scaffolds with lees than this many BUSCO loci", 
+                         "remove scaffolds with less than this many BUSCO loci", 
                          value = 10),
             numericInput("width", 
                          "width for plot in PDF", 
@@ -51,15 +51,25 @@ ui <- fluidPage(
                          "height of plot in PDF", 
                          value = 6),
             textInput("species", "Plot title", value = "Genus_species"),
+            selectInput("facetOrientation", 
+                        "Orientation for facets", 
+                        choices = c("Vertical" = "vertical", "Horizontal" = "horizontal"), 
+                        selected = "vertical"),
+            selectInput("plotTheme", 
+                        "Plot theme", 
+                        choices = c("Minimal" = "minimal", "Standard" = "standard"), 
+                        selected = "minimal"),
             downloadButton('downloadPlot', 'Download Plot')
         ),
-
+        
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("distPlot")
         )
     )
 )
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -110,27 +120,50 @@ server <- function(input, output) {
         } else {
             mydata <- dat()
             windwSize <- mydata$windwSize
-            p <- ggplot(mydata$grp_busco, aes(fill=nigon, y=n, x=ints-windwSize)) + 
-                facet_grid(scaffold_f ~ ., switch = "y") +
-                geom_bar(position="stack", stat="identity") +
+            if (input$facetOrientation == "vertical") {
+                p <- ggplot(mydata$grp_busco, aes(fill=nigon, y=n, x=ints-windwSize)) + 
+                    facet_grid(scaffold_f ~ ., switch = "y")
+                legend_position <- "right"
+                strip_angle <- 0
+                gncol <- 1
+            } else {
+                p <- ggplot(mydata$grp_busco, aes(fill=nigon, y=n, x=ints-windwSize)) + 
+                    facet_grid(. ~ scaffold_f)
+                legend_position <- "bottom"
+                strip_angle <- 90
+                gncol <- 7
+            }
+            p <- p + geom_bar(position="stack", stat="identity") +
                 ggtitle(mydata$spName) +
-                theme_minimal() +
+                # theme_minimal() +
                 scale_y_continuous(breaks = scales::pretty_breaks(4),
-                                   position = "right") +
+                                   position = "right",
+                                   expand = expansion(mult = c(0, 0.1))) +
                 scale_x_continuous(labels = label_number_si()) +
                 scale_fill_manual(values = cols) +
-                guides(fill = guide_legend(ncol = 1,
-                                           title = "Nigon")) +
-                theme(axis.title.y=element_blank(),
-                      axis.title.x=element_blank(),
-                      panel.border = element_blank(),
-                      strip.text.y.left = element_text(angle = 0),
-                      text = element_text(size=9),
-                      plot.title = ggtext::element_markdown()
-                )
+                guides(fill = guide_legend(ncol = gncol,
+                                           title = "Nigon")) 
+            # Apply selected theme
+            if (input$plotTheme == "minimal") {
+                p <- p + theme_minimal()
+            } else {
+                p <- p + theme(panel.background = element_rect(fill = "white", color = "black"),
+                               panel.grid.major = element_line(color = "grey90"),
+                               panel.grid.minor = element_line(color = "grey90"))
+            }
+            p <- p + theme(axis.title.y=element_blank(),
+                           axis.title.x=element_blank(),
+                           panel.border = element_blank(),
+                           legend.position = legend_position,
+                           strip.text.y.left = element_text(angle = strip_angle),
+                           text = element_text(size=9),
+                           plot.title = ggtext::element_markdown()
+            )
+            
             return(p)
         }
     })
+    
     
     output$distPlot <- renderPlot({
         print(plotInput())
