@@ -87,7 +87,7 @@ plNigon <- group_by(consUsco, Sequence) %>%
   theme_minimal() +
   scale_y_continuous(breaks = scales::pretty_breaks(4),
                      position = "right") +
-  scale_x_continuous(labels = label_number_si()) +
+  scale_x_continuous(labels = label_number(scale_cut = scales::cut_short_scale())) +
   scale_fill_manual(values = cols) +
   guides(fill = guide_legend(ncol = 1,
                              title = "Nigon")) +
