@@ -1,8 +1,22 @@
 # Visualize Nigon units in Nematode assemblies
 
-You need to run BUSCO on your genome assembly using the nematoda_odb10 dataset.
-This script takes as input the resulting `full_table.tsv`.
-You can now paint your genome by Nigons online. Simply upload your BUSCO full_table TSV file to [https://pgonzale60.shinyapps.io/vis_alg/](https://pgonzale60.shinyapps.io/vis_alg/). 
+`vis_ALG` visualizes nematode chromosome architectures painted by their ancestral linkage groups (**Nigon units A, B, C, D, E, N, and X**).
+
+The script takes as input the `full_table.tsv` resulting from a BUSCO run. It supports both:
+- **`chromadorea_odb12`** (Modern BUSCO v5 / OrthoDB v12, 1,126 loci; dictionary: `data/gene2Nigon_chromadorea_odb12.tsv.gz`)
+- **`nematoda_odb10`** (Legacy BUSCO v4, 3,131 loci; dictionary: `data/gene2Nigon_busco20200927.tsv.gz`)
+
+You can also paint your genome by Nigons online: simply upload your BUSCO full_table TSV file to [https://pgonzale60.shinyapps.io/vis_alg/](https://pgonzale60.shinyapps.io/vis_alg/). 
+
+## `chromadorea_odb12` Support
+
+Nigon units have been de novo defined and cross-validated for the modern `chromadorea_odb12` BUSCO lineage across **77 chromosome-level assemblies** replicating the Gonzalez de la Rosa et al. (*G3*, 2021) unsupervised PAM and CLARA clustering methodology.
+
+- **Drop-in dictionaries**:
+  - `data/gene2Nigon_chromadorea_odb12.tsv.gz`: Canonical 1,120 assigned loci (recommended).
+  - `data/gene2Nigon_chromadorea_odb12_strict_s035.tsv.gz`: Strict 1,050 loci ($s_i \ge 0.35$ silhouette threshold).
+  - `data/gene2Nigon_busco_chromadorea_odb12.tsv.gz`: Full 5-tier annotated master table.
+- **Analysis, Scripts & Plots**: Full documentation, clustering scripts, outgroup validation (Monhysterida & Enoplea), and publication diagnostic figures are located in the [`chromadorea_odb12/`](chromadorea_odb12/) directory. 
 
 ## Online painting
 
@@ -38,7 +52,15 @@ cd vis_ALG/
 
 ## Usage
 
-You will need to specify the result of BUSCO and the location of the Nigon element dictionary.
+You will need to specify the result of BUSCO and the corresponding Nigon element dictionary.
+
+### Using `chromadorea_odb12` (Modern BUSCO v5):
+
+``` shell
+Rscript bin/vis_ALGs.R -b full_table.tsv -n data/gene2Nigon_chromadorea_odb12.tsv.gz -s Genus_species -o output.png
+```
+
+### Using `nematoda_odb10` (Legacy BUSCO v4):
 
 ``` shell
 Rscript bin/vis_ALGs.R -b full_table.tsv -n data/gene2Nigon_busco20200927.tsv.gz -s Genus_species -o output.png
